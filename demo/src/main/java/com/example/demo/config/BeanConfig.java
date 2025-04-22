@@ -15,8 +15,14 @@ public class BeanConfig {
         return "bean1";
     }
 
+    // 빈은 이름보다 자료형이 중요
     @Bean
     public Game game() {
+        return new Game();
+    }
+
+    @Bean
+    public Game game2() {
         return new Game();
     }
 

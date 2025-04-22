@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
@@ -28,18 +29,25 @@ import lombok.extern.slf4j.Slf4j;
 public class HomeController {
     // bean 생성
     @Autowired String bean1;   //DI
+
+    // 같은 자료형의 빈이 2개 이상이라서 어떤 빈인지 지정하여 호출
+    // 빈이 1개일때는 자료형이 중요하기 때문에 이름은 중요하지 않음
     @Autowired Game game;
+    @Autowired @Qualifier("game2") Game g;
+
     @Autowired Bean3 bean3;
     @Autowired Faker faker;
     @Autowired JdbcTemplate jdbcTemplate;
     @Autowired ImageUtil image;
+    @Autowired @Qualifier("ImageUtil2") ImageUtil util;
+
     // Controller 안에는 00Methode가 꼭 있어야함 = 컨트롤러 메소드
     // get 방식으로 요청이 왔을때 연결해주는 메소드
     // html 없이 사용하려면 위나 아래에 @ResponseBoby 작성
     @GetMapping("/home")
     public String home() {
         System.out.println(bean1);
-        System.out.println(game.play());
+        System.out.println(g.play());
         System.out.println(bean3.run());
 
         String name = faker.name().fullName();
