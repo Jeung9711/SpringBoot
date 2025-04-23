@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Request 실습</title>
+  </head>
+  <body>
+    <h2>1. GET (QueryString)</h2>
+    <button onclick="sendQuery()">전송</button>
+
+    <h2>2. POST (FormData)</h2>
+    <button onclick="sendForm()">전송</button>
+
+    <h2>3. POST (JSON)</h2>
+    <button onclick="sendJson()">전송</button>
+
+    <h2>4. POST (JSON to 다른 포트)</h2>
+    <button onclick="sendCrossJson()">전송</button>
+
+    <script>
+      async function sendQuery() {
+        const url = "http://localhost:8080/query";
+        const res = await fetch(url);
+        const data = await res.text();
+
+        alert(data);
+      }
+
+      async function sendForm() {
+        const formdata = new FormData();
+        const url = "http://localhost:8080/form";
+        const res = await fetch(url, {
+          method: "post",
+          body: formdata,
+        });
+        const data = await res.text();
+        alert(data);
+      }
+
+      async function sendJson() {
+        const obj = {};
+        const res = await fetch(url, {
+          method: post,
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(obj),
+        });
+        const data = await res.json();
+        alert(data);
+      }
+
+      async function sendCrossJson() {}
+    </script>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>회원가입</title>
+    <script>
+      async function submitForm() {
+        const url = "http://localhost:8080/register_ajax2";
+        // fetch의 두번째 인자 객체를 넣으면 post 요청 가능
+        const formData = new FormData();
+        formData.append("name", "jeung");
+        formData.append("age", 30);
+        formData.append("email", "zzz@");
+
+        const name = document.querySelector(".name");
+        const age = document.querySelector(".age");
+        const email = document.querySelector(".email");
+
+        const obj = { name: name.value, age: age.vlaue, email: email.value };
+
+        const res = await fetch(url, {
+          method: "post",
+          // body: formData,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(obj),
+        });
+        const data = await res.text(); // 2 type - json, text
+        console.log(data);
+      }
+    </script>
+  </head>
+
+  <body>
+    <h2>회원가입 (AJAX)</h2>
+    이름: <input type="text" class="name" /><br />
+    나이: <input type="number" class="age" /><br />
+    이메일: <input type="text" class="email" /><br />
+    <button onclick="submitForm()">제출</button>
+    <p id="result"></p>
+  </body>
+</html>
