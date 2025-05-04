@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head th:replace="~{common/head}"> </head>
+  <body>
+    <div th:replace="~{common/header}"></div>
+
+    <nav th:replace="~{common/nav}"></nav>
+
+    <div class="container mt-5">
+      <div class="row">
+        <div>
+          <form
+            class="d-flex mb-3 justify-content-end"
+            th:action="@{/board/list}"
+            method="get"
+          >
+            <input
+              type="text"
+              name="search"
+              class="form-control me-2 flex-grow-1"
+              placeholder="검색어를 입력하세요"
+              th:value="${param.search}"
+              style="max-width: 600px"
+            />
+            <button class="btn btn-primary btn-block" type="submit">
+              검색
+            </button>
+          </form>
+        </div>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>제목</th>
+              <th>작성자</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              th:each="board : ${list}"
+              th:attr="id=${board.id}"
+              th:onclick="@{|goto(${board.id})|}"
+            >
+              <td th:text="${board.id}"></td>
+              <td th:text="${board.title}"></td>
+              <td th:text="${board.userName}"></td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="button" class="btn btn-primary btn-block" id="write-btn">
+          글쓰기
+        </button>
+      </div>
+      <ul class="pagination justify-content-center mt-3">
+        <!-- 맨 앞으로 -->
+        <li th:class="${page == 1} ? 'page-item disabled' : 'page-item'">
+          <a class="page-link" th:href="@{/board/list(page=1)}">&laquo;</a>
+        </li>
+        <!-- 이전 -->
+        <li th:class="${page == 1} ? 'page-item disabled' : 'page-item'">
+          <a class="page-link" th:href="@{/board/list(page=${page - 1})}"
+            >&lsaquo;</a
+          >
+        </li>
+        <!-- 페이지 번호 반복 -->
+        <li
+          th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
+          th:class="${page} == ${pageNumber} ? 'page-item active' : 'page-item'"
+        >
+          <a
+            class="page-link"
+            th:href="@{/board/list(page=${pageNumber})}"
+            th:text="${pageNumber}"
+          ></a>
+        </li>
+        <!-- 다음 -->
+        <li
+          th:class="${page == totalPages} ? 'page-item disabled' : 'page-item'"
+        >
+          <a class="page-link" th:href="@{/board/list(page=${page + 1})}"
+            >&rsaquo;</a
+          >
+        </li>
+        <!-- 맨 뒤로 -->
+        <li
+          th:class="${page == totalPages} ? 'page-item disabled' : 'page-item'"
+        >
+          <a class="page-link" th:href="@{/board/list(page=${totalPages})}"
+            >&raquo;</a
+          >
+        </li>
+      </ul>
+    </div>
+
+    <script>
+      document.querySelector("#write-btn").addEventListener("click", () => {
+        location = "/board/write";
+      });
+
+      function goto(id) {
+        location.href = "/board/view?id=" + id;
+        concole.log(id);
+      }
+    </script>
+
+    <div th:replace="~{common/footer}"></div>
+  </body>
+</html>

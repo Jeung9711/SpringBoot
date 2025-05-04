@@ -1,0 +1,63 @@
+<div th:fragment="commentFragment" class="container mt-4">
+  <!-- 댓글 입력 영역 -->
+  <div class="d-flex mb-3 justify-content-center">
+    <!-- 댓글 수 표시 -->
+    <div class="d-flex align-items-center me-3">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="currentColor"
+        class="bi bi-chat-left-text me-1"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M14 1a1 1 0 0 1 1 1v11.793l-2.5-2.5H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"
+        />
+        <path d="M3 3h10v1H3V3zm0 2h10v1H3V5zm0 2h7v1H3V7z" />
+      </svg>
+      <span th:text="${commentCount}">0</span>
+    </div>
+
+    <!-- 댓글 작성 폼 -->
+    <form
+      method="post"
+      th:action="@{/commentwrite}"
+      class="d-flex"
+      style="width: 80%; max-width: 900px"
+    >
+      <input
+        type="text"
+        name="comment"
+        class="form-control"
+        placeholder="댓글을 입력하세요"
+        style="height: 38px; padding: 5px 10px; font-size: 14px; flex-grow: 1"
+      />
+      <button
+        class="btn btn-primary ms-2"
+        style="height: 38px; font-size: 14px; white-space: nowrap"
+      >
+        등록
+      </button>
+    </form>
+  </div>
+  <!-- 댓글 리스트 -->
+  <div th:each="comment : ${comments}">
+    <div class="border-top pt-3 pb-2 d-flex align-items-center">
+      <!-- 작성자 -->
+      <div class="pe-2" style="flex: 0 0 20%">
+        <strong th:text="${comment.userName}"></strong>
+      </div>
+      <!-- 댓글 내용 -->
+      <div class="px-2" style="flex: 0 0 60%">
+        <span th:text="${comment.comment}"></span>
+      </div>
+      <!-- 작성일자 -->
+      <div class="ps-2 text-end text-muted" style="flex: 0 0 20%">
+        <small
+          th:text="${#temporals.format(comment.date, 'yyyy-MM-dd HH:mm')}"
+        ></small>
+      </div>
+    </div>
+  </div>
+</div>

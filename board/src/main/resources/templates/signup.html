@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head th:replace="~{common/head}"> </head>
+  <body>
+    <div th:replace="~{common/header}"></div>
+
+    <nav th:replace="~{common/nav}"></nav>
+
+    <div class="container mt-5">
+      <div class="row">
+        <form method="post" action="/signup">
+          <div class="mb-3">
+            <label for="email">Email:</label>
+            <input type="text" class="form-control" id="email" name="email" />
+          </div>
+          <div class="mb-3">
+            <label for="pwd">Password:</label>
+            <input type="password" class="form-control" id="pwd" name="pwd" />
+          </div>
+          <div class="mb-3">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" name="name" />
+          </div>
+          <div class="d-grid gap-2">
+            <button
+              class="btn btn-primary"
+              id="signup"
+              disabled
+              style="pointer-events: none; opacity: 0.6"
+            >
+              Sign Up
+            </button>
+          </div>
+          <div th:if="${error}" class="alert alert-danger mt-3" role="alert">
+            <span th:text="${error}"></span>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div th:replace="~{common/footer}"></div>
+  </body>
+  <script>
+    const emailInput = document.getElementById("email");
+    const pwInput = document.getElementById("pwd");
+    const nameInput = document.getElementById("name");
+    const btn = document.getElementById("signup");
+
+    function checkInputs() {
+      const email = emailInput.value.trim();
+      const pw = pwInput.value.trim();
+      const name = nameInput.value.trim();
+
+      const check = email && pw && name;
+
+      btn.disabled = !check;
+      btn.style.pointerEvents = check ? "auto" : "none";
+      btn.style.opacity = check ? "1" : "0.6";
+    }
+
+    emailInput.addEventListener("input", checkInputs);
+    pwInput.addEventListener("input", checkInputs);
+    nameInput.addEventListener("input", checkInputs);
+  </script>
+</html>
