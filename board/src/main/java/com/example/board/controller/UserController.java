@@ -27,10 +27,11 @@ public class UserController {
 	
 	@PostMapping("/signin")
 	public String signinPost(
+		Model model,
 		HttpSession session,
+		@RequestParam(required = false) String redirect,
 		@RequestParam String email,
-		@RequestParam String pwd,
-		Model model
+		@RequestParam String pwd
 	) {
 		Optional<User> opt = userRepository.findByEmail(email);
 		
@@ -44,10 +45,13 @@ public class UserController {
 
 		if(user.getPwd().equals(pwd)) {
 			session.setAttribute("user_info", user);
+			System.out.println("User info set in session: " + user.getId());  // 로그 추가
 		} else {
 			model.addAttribute("error", "로그인 실패");
 		}
-		return "redirect:/";
+		return "redirect:" + (redirect != null && !redirect.isBlank()
+    							? (redirect.startsWith("/") ? redirect : "/" + redirect)
+    								: "/");
 	}
 
 	@GetMapping("/signout")

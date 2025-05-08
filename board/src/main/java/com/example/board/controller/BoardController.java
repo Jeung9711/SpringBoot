@@ -1,6 +1,10 @@
 package com.example.board.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,15 +17,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.board.DTO.BoardDTO;
 import com.example.board.DTO.CommentDTO;
 import com.example.board.entity.Board;
 import com.example.board.entity.Comment;
+import com.example.board.entity.FileAtch;
 import com.example.board.entity.Like;
 import com.example.board.entity.User;
 import com.example.board.repository.BoardRepository;
 import com.example.board.repository.CommentRepository;
+import com.example.board.repository.FileAtchRepository;
 import com.example.board.repository.LikeRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -35,6 +42,7 @@ public class BoardController {
 	@Autowired BoardRepository boardRepository;
 	@Autowired LikeRepository likeRepository;
 	@Autowired CommentRepository commentRepository;
+	@Autowired FileAtchRepository fileAtchRepository;
 	
 	@GetMapping("/board/delete/{id}")
 	public String boardDelete(
@@ -82,6 +90,10 @@ public class BoardController {
 		session.setAttribute("boardId", id);
 		Optional<Board> opt = boardRepository.findById(id);
 		BoardDTO board = BoardDTO.toDto(opt);
+
+		// 게시글 첨부파일 가져오기
+		List<FileAtch> files = fileAtchRepository.findByBoardId(id);
+		model.addAttribute("images", files);
 
 		// 좋아요 정보 가져오기
 		Long likes = likeRepository.countByBoardId(id);
@@ -170,21 +182,38 @@ public class BoardController {
 
 	@GetMapping("/board/write")
 	public String boardWrite() {
-
 		return "board/write";
 	}
 
 	@PostMapping("/board/write")
 	public String boardWritePost(
-		 @ModelAttribute Board board,
-		 HttpSession session
-	) {
-		if(session != null) {
-			User user = (User) session.getAttribute("user_info");
+		@ModelAttribute Board board,
+		@RequestParam MultipartFile file,
+		HttpSession session
+	) throws IllegalStateException, IOException {
+		
+		User user = (User) session.getAttribute("user_info");
 
-			board.setUser(user);
-			boardRepository.save(board);
-		}
+		board.setUser(user);
+		Board savedBoard = boardRepository.save(board);
+
+		FileAtch fileAtch = new FileAtch();
+
+		fileAtch.setUser(user);
+		fileAtch.setBoard(savedBoard);
+
+		String oName = file.getOriginalFilename();
+		fileAtch.setOName(oName);
+		String cName = UUID.randomUUID() + oName.substring(oName.lastIndexOf("."));
+		fileAtch.setCName(cName);
+		
+
+		fileAtchRepository.save(fileAtch);
+
+		// 실제 파일 저장
+		File f = new File("c:/board/" + cName);
+		file.transferTo(f);
+		
 		return "redirect:/board";
 	}
 }

@@ -19,6 +19,13 @@
             th:text="${board.userName}"
           ></h6>
           <p class="card-text mt-3" th:text="${board.content}"></p>
+          <div th:each="img : ${images}">
+            <!-- 서버의 로컬 경로를 이해못함 -> 컨트롤러로 매핑 -->
+            <img
+              th:src="@{'/images/'+${img.cName}}"
+              th:alt="@{|${img.oName}|}"
+            />
+          </div>
         </div>
       </div>
     </div>

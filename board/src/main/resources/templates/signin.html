@@ -9,6 +9,7 @@
     <div class="container mt-5">
       <div class="row">
         <form method="post" action="/signin">
+          <input type="hidden" name="redirect" th:value="${param.redirect}" />
           <div class="mb-3 input-group flex-nowrap">
             <span class="input-group-text">💻</span>
             <input
