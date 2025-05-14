@@ -1,8 +1,11 @@
 package com.example.board.DTO;
 
-public class userDTO {
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
+public class UserDTO {
     Long id;
     String email;
     String name;
-    String pwd;
 }

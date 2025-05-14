@@ -21,6 +21,7 @@
           <p class="card-text mt-3" th:text="${board.content}"></p>
           <div th:each="img : ${images}">
             <!-- 서버의 로컬 경로를 이해못함 -> 컨트롤러로 매핑 -->
+            <!-- 결국 다운로드를 하는 경로를 작성한 것과 동일 -->
             <img
               th:src="@{'/images/'+${img.cName}}"
               th:alt="@{|${img.oName}|}"

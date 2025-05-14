@@ -18,8 +18,5 @@ public class FileAtch {
     String cName;
 
     @ManyToOne
-    User user;
-
-    @ManyToOne
     Board board;
 }

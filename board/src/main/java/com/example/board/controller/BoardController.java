@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,7 +33,6 @@ import com.example.board.repository.FileAtchRepository;
 import com.example.board.repository.LikeRepository;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -185,6 +185,14 @@ public class BoardController {
 		return "board/write";
 	}
 
+	// 두 개 이상의 테이블에 접근한다면 사용, 데이터 무결성을 위해/ transactional을 사용하면 하나의 덩어리로 행동
+	// runtime 오류만 rollback 하므로 원하는 오류를 모두 지정
+	@Transactional (
+		rollbackFor = {
+			IOException.class,
+			RuntimeException.class
+		}
+	)
 	@PostMapping("/board/write")
 	public String boardWritePost(
 		@ModelAttribute Board board,
@@ -199,7 +207,6 @@ public class BoardController {
 
 		FileAtch fileAtch = new FileAtch();
 
-		fileAtch.setUser(user);
 		fileAtch.setBoard(savedBoard);
 
 		String oName = file.getOriginalFilename();
